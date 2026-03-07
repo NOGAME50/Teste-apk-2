@@ -2,39 +2,1211 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NOGAME TECH</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOGAME AI Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* [Gade tout style yo menm jan anvan] */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #000;
+            background: linear-gradient(180deg, #f6f7fb, #eef1f7);
+            color: #222;
+        }
+
+        body.dark {
+            background: #121212;
+            color: #eee;
+        }
+
+        /* LOGO */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px;
+        }
+        .logo img {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+        }
+        .logo h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .logo p {
+            font-size: .8rem;
+            color: #666;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            padding: 10px 15px;
+            overflow-x: auto;
+        }
+        .tabs button {
+            flex: 0 0 auto;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 18px;
+            background: #fff;
+            box-shadow: 0 6px 15px rgba(0,0,0,.08);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .tabs button.active {
+            background: linear-gradient(135deg, #ff5f6d, #ffc371);
             color: #fff;
-            height: 100vh;
+        }
+
+        /* CONTENT */
+        .content {
+            padding: 15px;
+        }
+        .view {
+            display: none;
+        }
+        .view.active {
+            display: block;
+        }
+
+        /* INPUTS */
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            border-radius: 16px;
+            border: none;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,.08);
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        /* ACTION BUTTON */
+        .action {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        /* GALLERY */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 20px;
             overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,.12);
+        }
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        .actions {
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+        }
+        .actions button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .save {
+            background: #4caf50;
+            color: #fff;
+        }
+        .del {
+            background: #f44336;
+            color: #fff;
         }
 
-        #root {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Splash Screen */
-        .splash-screen {
-            display: flex;
-            flex-direction: column;
+        /* VIEWER */
+        .viewer {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.9);
+            display: none;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            z-index: 999;
+        }
+        .viewer img {
+            max-width: 95%;
+            max-height: 95%;
+            border-radius: 20px;
+        }
+        .viewer button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            background: #ff5252;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* SPLASH SCREEN */
+        .splash {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s;
+        }
+        .splash img {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* MODAL */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9000;
             padding: 20px;
-            background: #000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 30px;
+            padding: 25px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        body.dark .modal-content {
+            background: #1e1e1e;
+            color: white;
+        }
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* COUNTRY LIST */
+        .country-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            background: #f5f5f5;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        body.dark .country-item {
+            background: #2d2d2d;
+        }
+        .country-item.selected {
+            border: 2px solid #667eea;
+        }
+        .country-flag {
+            font-size: 2rem;
+        }
+        .country-name {
+            font-weight: 600;
+            flex: 1;
+        }
+
+        /* AUTH */
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 20px;
+            background: #f0f0f0;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .auth-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .auth-form {
+            display: none;
+        }
+        .auth-form.active {
+            display: block;
+        }
+
+        /* PROFIL */
+        .profil-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .profil-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+        }
+        .profil-info {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        body.dark .profil-info {
+            background: #1e1e1e;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #666;
+        }
+        .info-value {
+            font-weight: 600;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div class="splash" id="splash">
+    <img src="https://i.postimg.cc/TYr8jS4t/20260222-154604.jpg" alt="Logo">
+</div>
+
+<!-- MODAL PEYI -->
+<div class="modal" id="countryModal">
+    <div class="modal-content">
+        <h2 class="modal-title" id="countryTitle">Chwazi peyi w</h2>
+        <div id="countryList"></div>
+        <button class="action" id="validateBtn" disabled onclick="validateCountry()">Kontinye</button>
+    </div>
+</div>
+
+<!-- MODAL KONEKSYON -->
+<div class="modal" id="authModal" style="display: none;">
+    <div class="modal-content">
+        <h2 class="modal-title" id="authTitle">Byenveni</h2>
+        
+        <div class="auth-tabs">
+            <button class="auth-tab active" onclick="switchAuthTab('login')" id="loginTab">Konekte</button>
+            <button class="auth-tab" onclick="switchAuthTab('register')" id="registerTab">Enskri</button>
+        </div>
+
+        <div class="auth-form active" id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Imèl">
+            <input type="password" id="loginPassword" placeholder="Modpas">
+            <button class="action" onclick="login()" id="loginBtn">Konekte</button>
+            <div id="loginMsg" style="color: #f44336; text-align: center;"></div>
+        </div>
+
+        <div class="auth-form" id="registerForm">
+            <input type="text" id="regName" placeholder="Non konplè">
+            <input type="email" id="regEmail" placeholder="Imèl">
+            <input type="password" id="regPassword" placeholder="Modpas">
+            <input type="password" id="regConfirm" placeholder="Konfime modpas">
+            <button class="action" onclick="register()" id="registerBtn">Enskri</button>
+            <div id="registerMsg" style="color: #f44336; text-align: center;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- APLIKASYON PRENSIPAL -->
+<div id="mainApp" style="display: none;">
+
+    <!-- LOGO -->
+    <div class="logo">
+        <img src="https://i.postimg.cc/TYr8jS4t/20260222-154604.jpg" alt="Logo">
+        <div>
+            <h1 id="appName">NOGAME AI Studio</h1>
+            <p id="appDesc">AI Image Generator</p>
+        </div>
+    </div>
+
+    <!-- USER INFO -->
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: rgba(102,126,234,0.1); border-radius: 30px; margin: 0 15px 15px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="userFlagDisplay" style="font-size: 2rem;">🇫🇷</span>
+            <div>
+                <div id="userNameDisplay" style="font-weight: 600;">Non itilizatè</div>
+                <div id="userLangDisplay" style="font-size: 0.8rem; color: #666;">Français</div>
+            </div>
+        </div>
+        <button onclick="showProfil()" style="padding: 8px 15px; border: none; border-radius: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-weight: 600; cursor: pointer;">Mwen</button>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="active" onclick="switchTab('gen', this)" id="tabGen">🎨 Jeneratè</button>
+        <button onclick="switchTab('bg', this)" id="tabBg">🧼 Remove BG</button>
+        <button onclick="switchTab('blackpink', this)" id="tabBlackpink">🖤 Blackpink</button>
+        <button onclick="switchTab('vietnam', this)" id="tabVietnam">🇻🇳 Vietnam</button>
+        <button onclick="switchTab('tiktok', this)" id="tabTiktok">📱 TikTok</button>
+        <button onclick="switchTab('quiz', this)" id="tabQuiz">❓ Quiz</button>
+        <button onclick="switchTab('mp4', this)" id="tabMp4">🎬 MP4</button>
+        <button onclick="switchTab('image', this)" id="tabImage">🖼️ Image</button>
+        <button onclick="switchTab('vintage', this)" id="tabVintage">📸 Vintage</button>
+        <button onclick="switchTab('realistic', this)" id="tabRealistic">🌍 Realistic</button>
+        <button onclick="switchTab('anime', this)" id="tabAnime">🌸 Anime</button>
+        <button onclick="switchTab('fantasy', this)" id="tabFantasy">🧚 Fantasy</button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- GEN VIEW -->
+        <div class="view active" id="gen">
+            <input id="g_prompt" placeholder="Décris ton image">
+            <select id="g_style">
+                <option value="anime">Anime</option>
+                <option value="realistic">Réaliste</option>
+                <option value="cartoon">Cartoon</option>
+            </select>
+            <button class="action" onclick="generate()">✨ Générer</button>
+            <div class="gallery" id="g_gallery"></div>
+        </div>
+
+        <!-- BG VIEW -->
+        <div class="view" id="bg">
+            <input id="bg_url" placeholder="Lien image">
+            <button class="action" onclick="removeBG()">🧼 Remove BG</button>
+            <div class="gallery" id="bg_gallery"></div>
+        </div>
+
+        <!-- BLACKPINK VIEW -->
+        <div class="view" id="blackpink">
+            <input id="bp_text" placeholder="Texte Blackpink">
+            <button class="action" onclick="generateBlackpink()">🖤 Générer</button>
+            <div class="gallery" id="bp_gallery"></div>
+        </div>
+
+        <!-- VIETNAM VIEW -->
+        <div class="view" id="vietnam">
+            <button class="action" onclick="generateVietnam()">🇻🇳 Nouvelle fille</button>
+            <div class="gallery" id="vietnam_gallery"></div>
+        </div>
+
+        <!-- TIKTOK VIEW -->
+        <div class="view" id="tiktok">
+            <button class="action" onclick="generateTikTok()">📱 Nouvelle TikTok</button>
+            <div class="gallery" id="tiktok_gallery"></div>
+        </div>
+
+        <!-- QUIZ VIEW -->
+        <div class="view" id="quiz">
+            <select id="quiz_level">
+                <option value="easy">Facile</option>
+                <option value="medium">Moyen</option>
+                <option value="hard">Difficile</option>
+            </select>
+            <button class="action" onclick="generateQuiz()">❓ Nouveau quiz</button>
+            <div id="quiz_result" style="background: white; border-radius: 20px; padding: 15px; margin: 15px 0;"></div>
+            <div class="gallery" id="quiz_gallery"></div>
+        </div>
+
+        <!-- MP4 VIEW -->
+        <div class="view" id="mp4">
+            <input id="mp4_text" placeholder="Texte">
+            <input id="mp4_bg" placeholder="Couleur fond">
+            <input id="mp4_color" placeholder="Couleur texte">
+            <select id="mp4_emoji">
+                <option value="apple">Apple</option>
+                <option value="google">Google</option>
+            </select>
+            <button class="action" onclick="generateMP4()">🎬 Créer MP4</button>
+            <div class="gallery" id="mp4_gallery"></div>
+        </div>
+
+        <!-- IMAGE VIEW -->
+        <div class="view" id="image">
+            <input id="img_text" placeholder="Texte">
+            <input id="img_bg" placeholder="Couleur fond">
+            <input id="img_color" placeholder="Couleur texte">
+            <button class="action" onclick="generateImage()">🖼️ Créer image</button>
+            <div class="gallery" id="img_gallery"></div>
+        </div>
+
+        <!-- VINTAGE VIEW -->
+        <div class="view" id="vintage">
+            <input id="vintage_prompt" placeholder="Description">
+            <input id="vintage_neg" placeholder="À éviter">
+            <button class="action" onclick="generateVintage()">📸 Générer</button>
+            <div class="gallery" id="vintage_gallery"></div>
+        </div>
+
+        <!-- REALISTIC VIEW -->
+        <div class="view" id="realistic">
+            <input id="real_prompt" placeholder="Description">
+            <input id="real_neg" placeholder="À éviter">
+            <button class="action" onclick="generateRealistic()">🌍 Générer</button>
+            <div class="gallery" id="real_gallery"></div>
+        </div>
+
+        <!-- ANIME VIEW -->
+        <div class="view" id="anime">
+            <input id="anime_prompt" placeholder="Description">
+            <input id="anime_neg" placeholder="À éviter">
+            <button class="action" onclick="generateAnime()">🌸 Générer</button>
+            <div class="gallery" id="anime_gallery"></div>
+        </div>
+
+        <!-- FANTASY VIEW -->
+        <div class="view" id="fantasy">
+            <input id="fantasy_prompt" placeholder="Description">
+            <input id="fantasy_neg" placeholder="À éviter">
+            <button class="action" onclick="generateFantasy()">🧚 Générer</button>
+            <div class="gallery" id="fantasy_gallery"></div>
+        </div>
+
+        <!-- PROFIL VIEW -->
+        <div class="view" id="profil">
+            <div class="profil-header">
+                <div class="profil-avatar" id="profilAvatar">👤</div>
+                <h2 id="profilName">Non itilizatè</h2>
+                <p id="profilEmail">imèl@example.com</p>
+            </div>
+
+            <div class="profil-info">
+                <div class="info-row">
+                    <span class="info-label" id="labelCountry">Peyi</span>
+                    <span class="info-value" id="profilCountry">...</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label" id="labelLang">Lang</span>
+                    <span class="info-value" id="profilLang">...</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label" id="labelDate">Memb depi</span>
+                    <span class="info-value" id="profilDate">...</span>
+                </div>
+            </div>
+
+            <div class="profil-info">
+                <div class="info-row" onclick="toggleTheme()" style="cursor: pointer;">
+                    <span class="info-label" id="labelTheme">Mode sombre</span>
+                    <span class="info-value" id="themeIcon">🌙</span>
+                </div>
+            </div>
+
+            <button class="btn btn-danger" onclick="logout()" id="logoutBtn">Dekonekte</button>
+            <button class="btn" onclick="switchTab('gen', document.querySelector('[onclick*=\"gen\"]'))" id="backBtn">Retounen</button>
+        </div>
+    </div>
+</div>
+
+<!-- VIEWER -->
+<div class="viewer" id="viewer" onclick="closeViewer()">
+    <button>✕</button>
+    <img id="viewerImg">
+</div>
+
+<script>
+    // ========== SPLASH ==========
+    setTimeout(() => {
+        document.getElementById('splash').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('splash').style.display = 'none';
+            checkInitialState();
+        }, 500);
+    }, 2000);
+
+    // ========== LIST PEYI ==========
+    const countries = [
+        { code: 'fr', name: 'France', flag: '🇫🇷', lang: 'Français' },
+        { code: 'ht', name: 'Haïti', flag: '🇭🇹', lang: 'Créole' },
+        { code: 'us', name: 'États-Unis', flag: '🇺🇸', lang: 'English' },
+        { code: 'ca', name: 'Canada', flag: '🇨🇦', lang: 'English' },
+        { code: 'gb', name: 'Royaume-Uni', flag: '🇬🇧', lang: 'English' },
+        { code: 'es', name: 'Espagne', flag: '🇪🇸', lang: 'Español' },
+        { code: 'pt', name: 'Portugal', flag: '🇵🇹', lang: 'Português' },
+        { code: 'it', name: 'Italie', flag: '🇮🇹', lang: 'Italiano' },
+        { code: 'de', name: 'Allemagne', flag: '🇩🇪', lang: 'Deutsch' },
+        { code: 'nl', name: 'Pays-Bas', flag: '🇳🇱', lang: 'Nederlands' },
+        { code: 'be', name: 'Belgique', flag: '🇧🇪', lang: 'Français' },
+        { code: 'ch', name: 'Suisse', flag: '🇨🇭', lang: 'Français' },
+        { code: 'bf', name: 'Burkina Faso', flag: '🇧🇫', lang: 'Français' },
+        { code: 'ci', name: 'Côte d\'Ivoire', flag: '🇨🇮', lang: 'Français' },
+        { code: 'sn', name: 'Sénégal', flag: '🇸🇳', lang: 'Français' },
+        { code: 'cm', name: 'Cameroun', flag: '🇨🇲', lang: 'Français' },
+        { code: 'dz', name: 'Algérie', flag: '🇩🇿', lang: 'Arabe' },
+        { code: 'ma', name: 'Maroc', flag: '🇲🇦', lang: 'Arabe' },
+        { code: 'tn', name: 'Tunisie', flag: '🇹🇳', lang: 'Arabe' }
+    ];
+
+    // ========== TRADUCTION ==========
+    const translations = {
+        'Français': {
+            appName: 'NOGAME AI Studio',
+            appDesc: 'Générateur d\'images IA',
+            tabGen: '🎨 Jeneratè',
+            tabBg: '🧼 Remove BG',
+            tabBlackpink: '🖤 Blackpink',
+            tabVietnam: '🇻🇳 Vietnam',
+            tabTiktok: '📱 TikTok',
+            tabQuiz: '❓ Quiz',
+            tabMp4: '🎬 MP4',
+            tabImage: '🖼️ Image',
+            tabVintage: '📸 Vintage',
+            tabRealistic: '🌍 Realistic',
+            tabAnime: '🌸 Anime',
+            tabFantasy: '🧚 Fantasy',
+            countryTitle: 'Chwazi peyi w',
+            continue: 'Kontinye',
+            authTitle: 'Byenveni',
+            loginTab: 'Konekte',
+            registerTab: 'Enskri',
+            loginBtn: 'Konekte',
+            registerBtn: 'Enskri',
+            logoutBtn: 'Dekonekte',
+            backBtn: 'Retounen',
+            labelCountry: 'Peyi',
+            labelLang: 'Lang',
+            labelDate: 'Memb depi',
+            labelTheme: 'Mode sombre',
+            genPlaceholder: 'Décris ton image',
+            bgPlaceholder: 'Lien image',
+            bpPlaceholder: 'Texte Blackpink',
+            quizEasy: 'Facile',
+            quizMedium: 'Moyen',
+            quizHard: 'Difficile',
+            generate: '✨ Générer',
+            removeBG: '🧼 Remove BG',
+            newGirl: '🇻🇳 Nouvelle fille',
+            newTikTok: '📱 Nouvelle TikTok',
+            newQuiz: '❓ Nouveau quiz',
+            createMP4: '🎬 Créer MP4',
+            createImage: '🖼️ Créer image'
+        },
+        'English': {
+            appName: 'NOGAME AI Studio',
+            appDesc: 'AI Image Generator',
+            tabGen: '🎨 Generator',
+            tabBg: '🧼 Remove BG',
+            tabBlackpink: '🖤 Blackpink',
+            tabVietnam: '🇻🇳 Vietnam',
+            tabTiktok: '📱 TikTok',
+            tabQuiz: '❓ Quiz',
+            tabMp4: '🎬 MP4',
+            tabImage: '🖼️ Image',
+            tabVintage: '📸 Vintage',
+            tabRealistic: '🌍 Realistic',
+            tabAnime: '🌸 Anime',
+            tabFantasy: '🧚 Fantasy',
+            countryTitle: 'Choose your country',
+            continue: 'Continue',
+            authTitle: 'Welcome',
+            loginTab: 'Login',
+            registerTab: 'Register',
+            loginBtn: 'Login',
+            registerBtn: 'Register',
+            logoutBtn: 'Logout',
+            backBtn: 'Back',
+            labelCountry: 'Country',
+            labelLang: 'Language',
+            labelDate: 'Member since',
+            labelTheme: 'Dark mode',
+            genPlaceholder: 'Describe your image',
+            bgPlaceholder: 'Image link',
+            bpPlaceholder: 'Blackpink text',
+            quizEasy: 'Easy',
+            quizMedium: 'Medium',
+            quizHard: 'Hard',
+            generate: '✨ Generate',
+            removeBG: '🧼 Remove BG',
+            newGirl: '🇻🇳 New girl',
+            newTikTok: '📱 New TikTok',
+            newQuiz: '❓ New quiz',
+            createMP4: '🎬 Create MP4',
+            createImage: '🖼️ Create image'
+        },
+        'Créole': {
+            appName: 'NOGAME AI Studio',
+            appDesc: 'Jeneratè imaj AI',
+            tabGen: '🎨 Jeneratè',
+            tabBg: '🧼 Retire fon',
+            tabBlackpink: '🖤 Blackpink',
+            tabVietnam: '🇻🇳 Vietnam',
+            tabTiktok: '📱 TikTok',
+            tabQuiz: '❓ Kesyon',
+            tabMp4: '🎬 MP4',
+            tabImage: '🖼️ Imaj',
+            tabVintage: '📸 Vintage',
+            tabRealistic: '🌍 Realistic',
+            tabAnime: '🌸 Anime',
+            tabFantasy: '🧚 Fantasy',
+            countryTitle: 'Chwazi peyi w',
+            continue: 'Kontinye',
+            authTitle: 'Byenveni',
+            loginTab: 'Konekte',
+            registerTab: 'Enskri',
+            loginBtn: 'Konekte',
+            registerBtn: 'Enskri',
+            logoutBtn: 'Dekonekte',
+            backBtn: 'Retounen',
+            labelCountry: 'Peyi',
+            labelLang: 'Lang',
+            labelDate: 'Memb depi',
+            labelTheme: 'Mode fènwa',
+            genPlaceholder: 'Dekri imaj ou a',
+            bgPlaceholder: 'Link imaj la',
+            bpPlaceholder: 'Tèks Blackpink',
+            quizEasy: 'Fasil',
+            quizMedium: 'Mwayen',
+            quizHard: 'Difisil',
+            generate: '✨ Jeneré',
+            removeBG: '🧼 Retire fon',
+            newGirl: '🇻🇳 Nouvo fi',
+            newTikTok: '📱 Nouvo TikTok',
+            newQuiz: '❓ Nouvo kesyon',
+            createMP4: '🎬 Kreye MP4',
+            createImage: '🖼️ Kreye imaj'
+        }
+    };
+
+    // ========== VARIABLES ==========
+    let selectedCountry = null;
+    let currentUser = null;
+    let users = [];
+
+    // ========== STORAGE ==========
+    function loadFromStorage() {
+        const storedUsers = localStorage.getItem('app_users');
+        if (storedUsers) {
+            users = JSON.parse(storedUsers);
+        } else {
+            users = [{
+                id: 1,
+                name: 'Admin',
+                email: 'admin@nogame.ai',
+                password: 'admin123',
+                country: 'fr',
+                createdAt: new Date().toISOString()
+            }];
+            saveToStorage();
+        }
+
+        const storedUser = localStorage.getItem('current_user');
+        if (storedUser) {
+            currentUser = JSON.parse(storedUser);
+        }
+
+        const storedCountry = localStorage.getItem('user_country');
+        if (storedCountry) {
+            selectedCountry = JSON.parse(storedCountry);
+        }
+    }
+
+    function saveToStorage() {
+        localStorage.setItem('app_users', JSON.stringify(users));
+        if (currentUser) {
+            localStorage.setItem('current_user', JSON.stringify(currentUser));
+        }
+        if (selectedCountry) {
+            localStorage.setItem('user_country', JSON.stringify(selectedCountry));
+        }
+    }
+
+    // ========== LANG ==========
+    function applyLanguage() {
+        if (!selectedCountry) return;
+        
+        const lang = selectedCountry.lang;
+        const trans = translations[lang] || translations['Français'];
+
+        // Tit
+        document.getElementById('appName').textContent = trans.appName;
+        document.getElementById('appDesc').textContent = trans.appDesc;
+        
+        // Tabs
+        document.getElementById('tabGen').textContent = trans.tabGen;
+        document.getElementById('tabBg').textContent = trans.tabBg;
+        document.getElementById('tabBlackpink').textContent = trans.tabBlackpink;
+        document.getElementById('tabVietnam').textContent = trans.tabVietnam;
+        document.getElementById('tabTiktok').textContent = trans.tabTiktok;
+        document.getElementById('tabQuiz').textContent = trans.tabQuiz;
+        document.getElementById('tabMp4').textContent = trans.tabMp4;
+        document.getElementById('tabImage').textContent = trans.tabImage;
+        document.getElementById('tabVintage').textContent = trans.tabVintage;
+        document.getElementById('tabRealistic').textContent = trans.tabRealistic;
+        document.getElementById('tabAnime').textContent = trans.tabAnime;
+        document.getElementById('tabFantasy').textContent = trans.tabFantasy;
+
+        // Placeholders
+        document.getElementById('g_prompt').placeholder = trans.genPlaceholder;
+        document.getElementById('bg_url').placeholder = trans.bgPlaceholder;
+        document.getElementById('bp_text').placeholder = trans.bpPlaceholder;
+
+        // Quiz options
+        const quizSelect = document.getElementById('quiz_level');
+        if (quizSelect) {
+            quizSelect.options[0].text = trans.quizEasy;
+            quizSelect.options[1].text = trans.quizMedium;
+            quizSelect.options[2].text = trans.quizHard;
+        }
+
+        // Boutons
+        document.querySelectorAll('.action').forEach(btn => {
+            if (btn.textContent.includes('Générer') || btn.textContent.includes('Generate') || btn.textContent.includes('Jeneré')) {
+                if (btn.parentElement.id === 'gen') btn.textContent = trans.generate;
+                else if (btn.parentElement.id === 'bg') btn.textContent = trans.removeBG;
+                else if (btn.parentElement.id === 'vietnam') btn.textContent = trans.newGirl;
+                else if (btn.parentElement.id === 'tiktok') btn.textContent = trans.newTikTok;
+                else if (btn.parentElement.id === 'quiz') btn.textContent = trans.newQuiz;
+                else if (btn.parentElement.id === 'mp4') btn.textContent = trans.createMP4;
+                else if (btn.parentElement.id === 'image') btn.textContent = trans.createImage;
+            }
+        });
+
+        // Profil
+        document.getElementById('labelCountry').textContent = trans.labelCountry;
+        document.getElementById('labelLang').textContent = trans.labelLang;
+        document.getElementById('labelDate').textContent = trans.labelDate;
+        document.getElementById('labelTheme').textContent = trans.labelTheme;
+        document.getElementById('logoutBtn').textContent = trans.logoutBtn;
+        document.getElementById('backBtn').textContent = trans.backBtn;
+
+        // Modal
+        document.getElementById('countryTitle').textContent = trans.countryTitle;
+        document.getElementById('validateBtn').textContent = trans.continue;
+        document.getElementById('authTitle').textContent = trans.authTitle;
+        document.getElementById('loginTab').textContent = trans.loginTab;
+        document.getElementById('registerTab').textContent = trans.registerTab;
+        document.getElementById('loginBtn').textContent = trans.loginBtn;
+        document.getElementById('registerBtn').textContent = trans.registerBtn;
+
+        // Lang display
+        document.getElementById('userLangDisplay').textContent = lang;
+        document.getElementById('profilLang').textContent = lang;
+    }
+
+    // ========== INITIAL STATE ==========
+    function checkInitialState() {
+        loadFromStorage();
+
+        if (currentUser) {
+            showMainApp();
+        } else if (selectedCountry) {
+            showAuthModal();
+        } else {
+            showCountryModal();
+        }
+    }
+
+    // ========== COUNTRY MODAL ==========
+    function showCountryModal() {
+        document.getElementById('countryModal').style.display = 'flex';
+        
+        const list = document.getElementById('countryList');
+        list.innerHTML = '';
+        
+        countries.forEach(country => {
+            const div = document.createElement('div');
+            div.className = 'country-item';
+            div.onclick = () => selectCountry(country, div);
+            div.innerHTML = `
+                <span class="country-flag">${country.flag}</span>
+                <span class="country-name">${country.name}</span>
+                <span style="color: #666;">${country.lang}</span>
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    function selectCountry(country, element) {
+        selectedCountry = country;
+        document.querySelectorAll('.country-item').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('validateBtn').disabled = false;
+    }
+
+    function validateCountry() {
+        if (selectedCountry) {
+            saveToStorage();
+            document.getElementById('countryModal').style.display = 'none';
+            showAuthModal();
+        }
+    }
+
+    // ========== AUTH MODAL ==========
+    function showAuthModal() {
+        document.getElementById('authModal').style.display = 'flex';
+        applyLanguage();
+    }
+
+    function switchAuthTab(tab) {
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+        
+        if (tab === 'login') {
+            document.querySelectorAll('.auth-tab')[0].classList.add('active');
+            document.getElementById('loginForm').classList.add('active');
+        } else {
+            document.querySelectorAll('.auth-tab')[1].classList.add('active');
+            document.getElementById('registerForm').classList.add('active');
+        }
+    }
+
+    function login() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const msg = document.getElementById('loginMsg');
+
+        if (!email || !password) {
+            msg.textContent = 'Ranpli tout chan';
+            return;
+        }
+
+        const user = users.find(u => u.email === email && u.password === password);
+
+        if (user) {
+            currentUser = user;
+            saveToStorage();
+            msg.style.color = '#4caf50';
+            msg.textContent = 'Koneksyon siksè!';
+            setTimeout(() => {
+                document.getElementById('authModal').style.display = 'none';
+                showMainApp();
+            }, 1000);
+        } else {
+            msg.textContent = 'Imèl oswa modpas pa bon';
+        }
+    }
+
+    function register() {
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPassword').value;
+        const confirm = document.getElementById('regConfirm').value;
+        const msg = document.getElementById('registerMsg');
+
+        if (!name || !email || !pass || !confirm) {
+            msg.textContent = 'Ranpli tout chan';
+            return;
+        }
+
+        if (pass !== confirm) {
+            msg.textContent = 'Modpas yo pa konfòm';
+            return;
+        }
+
+        if (users.some(u => u.email === email)) {
+            msg.textContent = 'Imèl sa deja egziste';
+            return;
+        }
+
+        const newUser = {
+            id: users.length + 1,
+            name: name,
+            email: email,
+            password: pass,
+            country: selectedCountry.code,
+            createdAt: new Date().toISOString()
+        };
+
+        users.push(newUser);
+        currentUser = newUser;
+        saveToStorage();
+
+        msg.style.color = '#4caf50';
+        msg.textContent = 'Kont kreye!';
+        setTimeout(() => {
+            document.getElementById('authModal').style.display = 'none';
+            showMainApp();
+        }, 1000);
+    }
+
+    // ========== MAIN APP ==========
+    function showMainApp() {
+        document.getElementById('mainApp').style.display = 'block';
+        
+        if (currentUser) {
+            document.getElementById('userNameDisplay').textContent = currentUser.name;
+            const country = countries.find(c => c.code === currentUser.country) || countries[0];
+            document.getElementById('userFlagDisplay').textContent = country.flag;
+            
+            document.getElementById('profilName').textContent = currentUser.name;
+            document.getElementById('profilEmail').textContent = currentUser.email;
+            document.getElementById('profilCountry').textContent = country.name;
+            document.getElementById('profilLang').textContent = country.lang;
+            document.getElementById('profilDate').textContent = new Date(currentUser.createdAt).toLocaleDateString();
+            document.getElementById('profilAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+        }
+
+        applyLanguage();
+    }
+
+    function showProfil() {
+        document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById('profil').classList.add('active');
+    }
+
+    function logout() {
+        currentUser = null;
+        localStorage.removeItem('current_user');
+        document.getElementById('mainApp').style.display = 'none';
+        showAuthModal();
+    }
+
+    // ========== TABS ==========
+    function switchTab(id, btn) {
+        document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(id).classList.add('active');
+    }
+
+    // ========== VIEWER ==========
+    function openViewer(src) {
+        document.getElementById('viewerImg').src = src;
+        document.getElementById('viewer').style.display = 'flex';
+    }
+
+    function closeViewer() {
+        document.getElementById('viewer').style.display = 'none';
+    }
+
+    // ========== ADD IMAGE ==========
+    function addImage(galleryId, src) {
+        const gallery = document.getElementById(galleryId);
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const img = document.createElement('img');
+        img.src = src;
+        img.onclick = () => openViewer(src);
+
+        const actions = document.createElement('div');
+        actions.className = 'actions';
+
+        const save = document.createElement('button');
+        save.className = 'save';
+        save.textContent = '💾 Save';
+        save.onclick = (e) => {
+            e.stopPropagation();
+            if (window.Android) {
+                Android.saveImage(src);
+            } else {
+                alert('Image prête à être sauvegardée!');
+            }
+        };
+
+        const del = document.createElement('button');
+        del.className = 'del';
+        del.textContent = '🗑';
+        del.onclick = (e) => {
+            e.stopPropagation();
+            card.remove();
+        };
+
+        actions.appendChild(save);
+        actions.appendChild(del);
+        card.appendChild(img);
+        card.appendChild(actions);
+        
+        gallery.prepend(card);
+    }
+
+    // ========== API FUNCTIONS ==========
+    function generate() {
+        const prompt = document.getElementById('g_prompt').value;
+        if (!prompt) {
+            alert('Mete deskripsyon!');
+            return;
+        }
+        const style = document.getElementById('g_style').value;
+        const url = `https://apis.prexzyvilla.site/ai/${style}?prompt=${encodeURIComponent(prompt)}`;
+        addImage('g_gallery', url);
+    }
+
+    function removeBG() {
+        const url = document.getElementById('bg_url').value;
+        if (!url) {
+            alert('Mete link imaj!');
+            return;
+        }
+        addImage('bg_gallery', `https://apis.prexzyvilla.site/tools/removebgdirect?imageUrl=${encodeURIComponent(url)}`);
+    }
+
+    function generateBlackpink() {
+        const text = document.getElementById('bp_text').value;
+        if (!text) {
+            alert('Mete tèks!');
+            return;
+        }
+        addImage('bp_gallery', `https://apis.prexzyvilla.site/blackpinkstyle?text=${encodeURIComponent(text)}`);
+    }
+
+    function generateVietnam() {
+        addImage('vietnam_gallery', 'https://apis.prexzyvilla.site/random/vietnamgirl');
+    }
+
+    function generateTikTok() {
+        addImage('tiktok_gallery', 'https://apis.prexzyvilla.site/random/tiktokgirl');
+    }
+
+    function generateQuiz() {
+        const level = document.getElementById('quiz_level').value;
+        fetch(`https://apis.prexzyvilla.site/game/quizrandom?level=${level}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('quiz_result').innerHTML = `
+                    <div style="font-weight: 700;">❓ ${data.question || 'Kesyon'}</div>
+                    <div style="color: #4caf50; margin-top: 10px;">✅ ${data.answer || 'Repons'}</div>
+                `;
+            });
+    }
+
+    function generateMP4() {
+        const text = document.getElementById('mp4_text').value;
+        if (!text) {
+            alert('Mete tèks!');
+            return;
+        }
+        let url = `https://apis.prexzyvilla.site/imagecreator/mp4?text=${encodeURIComponent(text)}`;
+        if (document.getElementById('mp4_bg').value) url += `&background=${encodeURIComponent(document.getElementById('mp4_bg').value)}`;
+        if (document.getElementById('mp4_color').value) url += `&color=${encodeURIComponent(document.getElementById('mp4_color').value)}`;
+        if (document.getElementById('mp4_emoji').value) url += `&emojiStyle=${document.getElementById('mp4_emoji').value}`;
+        addImage('mp4_gallery', url);
+    }
+
+    function generateImage() {
+        const text = document.getElementById('img_text').value;
+        if (!text) {
+            alert('Mete tèks!');
+            return;
+        }
+        let url = `https://apis.prexzyvilla.site/imagecreator/image?text=${encodeURIComponent(text)}`;
+        if (document.getElementById('img_bg').value) url += `&background=${encodeURIComponent(document.getElementById('img_bg').value)}`;
+        if (document.getElementById('img_color').value) url += `&color=${encodeURIComponent(document.getElementById('img_color').value)}`;
+        addImage('img_gallery', url);
+    }
+
+    function generateVintage() {
+        const prompt = document.getElementById('vintage_prompt').value;
+        if (!prompt) {
+            alert('Mete deskripsyon!');
+            return;
+        }
+        let url = `https://apis.prexzyvilla.site/ai/vintage?prompt=${encodeURIComponent(prompt)}`;
+        if (document.getElementById('vintage_neg').value) url += `&negative_prompt=${encodeURIComponent(document.getElementById('vintage_neg').value)}`;
+        addImage('vintage_gallery', url);
+    }
+
+    function generateRealistic() {
+        const prompt = document.getElementById('real_prompt').value;
+        if (!prompt) {
+            alert('Mete deskripsyon!');
+            return;
+        }
+        let url = `https://apis.prexzyvilla.site/ai/realistic?prompt=${encodeURIComponent(prompt)}`;
+        if (document.getElementById('real_neg').value) url += `&negative_prompt=${encodeURIComponent(document.getElementById('real_neg').value)}`;
+        addImage('real_gallery', url);
+    }
+
+    function generateAnime() {
+        const prompt = document.getElementById('anime_prompt').value;
+        if (!prompt) {
+            alert('Mete deskripsyon!');
+            return;
+        }
+        let url = `https://apis.prexzyvilla.site/ai/anime?prompt=${encodeURIComponent(prompt)}`;
+        if (document.getElementById('anime_neg').value) url += `&negative_prompt=${encodeURIComponent(document.getElementById('anime_neg').value)}`;
+        addImage('anime_gallery', url);
+    }
+
+    function generateFantasy() {
+        const prompt = document.getElementById('fantasy_prompt').value;
+        if (!prompt) {
+            alert('Mete deskripsyon!');
+            return;
+        }
+        let url = `https://apis.prexzyvilla.site/ai/fantasy?prompt=${encodeURIComponent(prompt)}`;
+        if (document.getElementById('fantasy_neg').value) url += `&negative_prompt=${encodeURIComponent(document.getElementById('fantasy_neg').value)}`;
+        addImage('fantasy_gallery', url);
+    }
+
+    // ========== THEME ==========
+    function toggleTheme() {
+        document.body.classList.toggle('dark');
+        document.getElementById('themeIcon').textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+        localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    }
+
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark');
+        document.getElementById('themeIcon').textContent = '☀️';
+    }
+
+    // ========== INIT ==========
+    loadFromStorage();
+</script>
+</body>
+</html>            background: #000;
         }
 
         .logo {
