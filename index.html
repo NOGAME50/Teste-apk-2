@@ -1,40 +1,388 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="ht">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>NOGAME TECH</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --g1:#00FF87;--g2:#60EFFF;--g3:#B721FF;--r:#FF3366;--gold:#FFD60A;--orange:#FF6B35;
-  --bg:#03030A;--s1:#08081A;--s2:#0E0E22;--s3:#151530;--s4:#1E1E3A;
-  --bd:rgba(255,255,255,0.07);--bd2:rgba(255,255,255,0.14);
-  --tx:#EEEEFF;--mu:#4A4A7A;--mu2:#7070A0;
-  --rad:20px;--rad-s:14px;--rad-xs:9px;
-  --font:'DM Sans',sans-serif;--font2:'Syne',sans-serif;
-  --shadow:0 8px 32px rgba(0,0,0,.6);
-}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:var(--bg)}
-body{font-family:var(--font);color:var(--tx);overscroll-behavior:none}
-#root{height:100%;display:flex;flex-direction:column;position:relative}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:99px}
-input,textarea,select,button{font-family:var(--font);outline:none}textarea{resize:none}
-
-/* ── ANIMATIONS ── */
-@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-@keyframes slideDown{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
-@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.35)}100%{transform:scale(1)}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes logoPulse{0%,100%{box-shadow:0 0 60px rgba(0,255,135,.35),0 0 130px rgba(0,255,135,.1)}50%{box-shadow:0 0 110px rgba(0,255,135,.7),0 0 240px rgba(0,255,135,.25)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.5}}
-@keyframes heartPop{0%{transform:scale(1)}30%{transform:scale(1.6)}60%{transform:scale(.9)}100%{transform:scale(1)}}
-@keyframes notifSlide{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
-@keyframes wave{0%,100%{transform:scaleY(.5)}50%{transform:scaleY(1.5)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Tès Live TV - Kreyòl</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #0f0f1a;
+            color: #e0e0e0;
+            padding: 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        h1 {
+            font-size: 1.6rem;
+            margin-bottom: 12px;
+            color: #7aa2f7;
+            border-left: 4px solid #7aa2f7;
+            padding-left: 12px;
+        }
+        
+        .card {
+            background: #1a1b2e;
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            border: 1px solid #2a2c42;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: #bb9af7;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title i {
+            font-size: 1.4rem;
+        }
+        
+        .channel-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        
+        .channel-item {
+            background: #262941;
+            border-radius: 40px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #3d3f66;
+            transition: all 0.2s;
+        }
+        
+        .channel-item:active {
+            background: #2f3357;
+            transform: scale(0.98);
+        }
+        
+        .channel-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 60%;
+        }
+        
+        .play-btn {
+            background: #7aa2f7;
+            border: none;
+            color: #0f0f1a;
+            font-weight: bold;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(122,162,247,0.3);
+            transition: 0.2s;
+        }
+        
+        .play-btn:active {
+            background: #5d8bf4;
+            box-shadow: 0 2px 12px rgba(122,162,247,0.6);
+        }
+        
+        .video-container {
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 8px;
+            border: 2px solid #2a2c42;
+        }
+        
+        video {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            background: #000;
+            outline: none;
+        }
+        
+        .status {
+            background: #1e1f32;
+            border-radius: 40px;
+            padding: 10px 16px;
+            margin: 12px 0 8px;
+            font-size: 0.9rem;
+            border-left: 4px solid #7dcfff;
+            color: #c0caf5;
+            word-break: break-word;
+        }
+        
+        .add-channel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        input {
+            flex: 1;
+            background: #262941;
+            border: 1px solid #3d3f66;
+            border-radius: 40px;
+            padding: 14px 18px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        
+        input:focus {
+            border-color: #7aa2f7;
+        }
+        
+        button {
+            background: #2f3357;
+            border: none;
+            border-radius: 40px;
+            padding: 14px 20px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #4d5082;
+        }
+        
+        button.primary {
+            background: #7aa2f7;
+            color: #0f0f1a;
+            border: none;
+        }
+        
+        button:active {
+            background: #3d4270;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #565a8b;
+            font-size: 0.8rem;
+        }
+        
+        /* scrollbar joli */
+        .channel-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .channel-list::-webkit-scrollbar-track {
+            background: #1e1f32;
+        }
+        .channel-list::-webkit-scrollbar-thumb {
+            background: #565a8b;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📺 Tès Live TV Kreyòl</h1>
+        
+        <!-- Chanèl predefini (yo) -->
+        <div class="card">
+            <div class="section-title">
+                <span>🇦🇩</span> Chanèl ou yo (Andorra)
+            </div>
+            <div class="channel-list" id="channelList">
+                <!-- Se JavaScript ki pral ajoute yo -->
+            </div>
+            
+            <div class="status" id="status">
+                ⏸️ Pa gen chanèl seleksyone. Klike sou yon bouton pou jwe.
+            </div>
+        </div>
+        
+        <!-- Videyo pleyer -->
+        <div class="card" style="padding: 12px;">
+            <div class="section-title">
+                <span>▶️</span> Pleye Live
+            </div>
+            <div class="video-container">
+                <video id="videoPlayer" controls autoplay playsinline poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%231a1b2e'/%3E%3Ctext x='50' y='120' font-family='Arial' font-size='20' fill='%237aa2f7'%3EChargement...%3C/text%3E%3C/svg%3E">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+        
+        <!-- Ajoute pwòp chanèl ou (pou tès) -->
+        <div class="card">
+            <div class="section-title">
+                <span>➕</span> Ajoute yon chanèl tès
+            </div>
+            <div class="add-channel">
+                <input type="text" id="channelNameInput" placeholder="Non chanèl (eg: Tele Ayiti)" value="Tès mwen">
+                <input type="url" id="channelUrlInput" placeholder="Lyen videyo (m3u8, ...)" value="https://live-edge-eu-1.cdn.enetres.net/56495F77FD124FECA75590A906965F2C022/live-3000/index.m3u8">
+                <div class="input-group">
+                    <button class="primary" id="addChannelBtn">Ajoute nan lis</button>
+                    <button id="playDirectBtn">Jwe dirèkteman</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            ⚡ Tèks sou TrebEdit • Klike sou chanèl pou jwe
+        </div>
+    </div>
+    
+    <script>
+        // Lis chanèl predefini (sa w ban mwen an)
+        const channels = [
+            {
+                name: "Andorra TV (1080p) #1",
+                url: "https://live-edge-eu-1.cdn.enetres.net/56495F77FD124FECA75590A906965F2C022/live-3000/index.m3u8"
+            },
+            {
+                name: "Andorra TV (1080p) #2",
+                url: "https://livesg1.rtva.hiway.media/65cea6ac-6944"
+            }
+        ];
+        
+        // Referans DOM
+        const channelListDiv = document.getElementById('channelList');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const statusDiv = document.getElementById('status');
+        const channelNameInput = document.getElementById('channelNameInput');
+        const channelUrlInput = document.getElementById('channelUrlInput');
+        const addChannelBtn = document.getElementById('addChannelBtn');
+        const playDirectBtn = document.getElementById('playDirectBtn');
+        
+        // Fonksyon pou montre lis chanèl yo
+        function renderChannels() {
+            channelListDiv.innerHTML = '';
+            
+            if (channels.length === 0) {
+                channelListDiv.innerHTML = '<div style="padding: 20px; text-align: center; color: #777ca3;">👀 Pa gen chanèl. Ajoute youn anba a.</div>';
+                return;
+            }
+            
+            channels.forEach((ch, index) => {
+                const item = document.createElement('div');
+                item.className = 'channel-item';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'channel-name';
+                nameSpan.textContent = ch.name;
+                
+                const playButton = document.createElement('button');
+                playButton.className = 'play-btn';
+                playButton.textContent = 'Jwe';
+                playButton.setAttribute('data-index', index);
+                
+                playButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const idx = e.target.getAttribute('data-index');
+                    playChannel(channels[idx].url, channels[idx].name);
+                });
+                
+                item.appendChild(nameSpan);
+                item.appendChild(playButton);
+                channelListDiv.appendChild(item);
+            });
+        }
+        
+        // Fonksyon pou jwe yon chanèl
+        function playChannel(url, name) {
+            if (!url || url === '') {
+                statusDiv.innerHTML = '❌ Pa gen lyen valab.';
+                return;
+            }
+            
+            // Met a jou status
+            statusDiv.innerHTML = `▶️ Ap jwe: <strong>${name || 'Chanèl san non'}</strong><br><small style="opacity:0.7;">${url.substring(0, 60)}...</small>`;
+            
+            // Jwe videyo a
+            videoPlayer.src = url;
+            videoPlayer.play().catch(e => {
+                console.warn('Otoplay bloke?', e);
+                statusDiv.innerHTML += '<br>⚠️ Klike sou videyo a pou l lanse.';
+            });
+            
+            // Si gen ere
+            videoPlayer.onerror = function() {
+                statusDiv.innerHTML = '❌ Erez: Pa ka jwe videyo a. Lyen an petèt pa bon oswa pa sipòte.';
+            };
+        }
+        
+        // Ajoute yon nouvo chanèl nan lis la
+        function addChannelToList() {
+            const name = channelNameInput.value.trim();
+            let url = channelUrlInput.value.trim();
+            
+            if (!name || !url) {
+                alert('Tanpri mete non ak lyen.');
+                return;
+            }
+            
+            // Si itilizatè a mete yon fichye M3U, nou pa ka jwe li dirèk, men nou ka ajoute li kòm yon chanèl
+            // Nou ajoute tou senpleman
+            channels.push({ name: name, url: url });
+            renderChannels();
+            
+            // Netwaye input yo (ou ka kite si ou vle)
+            channelNameInput.value = '';
+            channelUrlInput.value = 'https://';
+            
+            statusDiv.innerHTML = '✅ Nouvo chanèl ajoute. Klike sou "Jwe" pou teste.';
+        }
+        
+        // Jwe dirèkteman san ajoute nan lis
+        function playDirect() {
+            const name = channelNameInput.value.trim() || 'Tès dirèk';
+            const url = channelUrlInput.value.trim();
+            
+            if (!url) {
+                alert('Mete yon lyen videyo.');
+                return;
+            }
+            
+            playChannel(url, name);
+        }
+        
+        // Evènman bouton yo
+        addChannelBtn.addEventListener('click', addChannelToList);
+        playDirectBtn.addEventListener('click', playDirect);
+        
+        // Inisyalize lis la
+        renderChannels();
+        
+        // Opsyon: jwe premye chanèl la automatiquement?
+        // Si ou vle, retire komantè sou liy anba a:
+        // if (channels.length > 0) playChannel(channels[0].url, channels[0].name);
+    </script>
+</body>
+</html>@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes glitch{0%,100%{clip-path:inset(0 0 100% 0)}20%{clip-path:inset(33% 0 50% 0)}40%{clip-path:inset(10% 0 80% 0)}60%{clip-path:inset(60% 0 20% 0)}80%{clip-path:inset(80% 0 0 0)}}
 
 /* ── TOAST ── */
